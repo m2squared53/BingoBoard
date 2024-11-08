@@ -87,7 +87,7 @@ public class BingoBoardLayout {
 		}
 		
 		// Create an input to add numbers (i.e. show) to the board
-		JTextField input = new JTextField("", 35);
+		JTextField input = new JTextField("", 7);
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		input.setBorder(border);
 		if (shouldWeightX) {
