@@ -144,7 +144,10 @@ public class BingoBoardLayout {
 				 * Case !valid : Pop appropriate error dialog
 				 */
 				if (valid && canAdd) {
-					labels[lastEntered].showValue();
+					if (currentCounter > 0) {
+						labels[currentlabels[currentCounter - 1]].flash(false);
+					}
+					labels[lastEntered].flash(true);
 					currentlabels[currentCounter++] = lastEntered;
 					clearLastButton.setEnabled(true);
 					resetButton.setEnabled(true);
@@ -184,6 +187,7 @@ public class BingoBoardLayout {
 			public void actionPerformed(ActionEvent e) {
 				int lastEntered = currentCounter - 1;
 				if (lastEntered >= 0 && currentlabels[lastEntered] >= 0) {
+					labels[currentlabels[lastEntered]].flash(false);
 					labels[currentlabels[lastEntered]].hideValue();
 					currentlabels[lastEntered] = 0;
 					currentCounter--;
@@ -218,6 +222,7 @@ public class BingoBoardLayout {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (int i = 0; i < labels.length; i++) {
+					labels[i].flash(false);
 					labels[i].hideValue();
 				}
 				
