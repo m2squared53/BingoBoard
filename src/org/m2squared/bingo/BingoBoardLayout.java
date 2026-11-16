@@ -166,6 +166,11 @@ public class BingoBoardLayout {
 				input.requestFocus();
 			}
 		});
+		/*
+		 * Set the default button for the frame to the submit button so that when the user hits enter 
+		 * the submit button is pressed
+		 */
+		frame.getRootPane().setDefaultButton(submitButton);
 		pane.add(submitButton, c);
     
 		/*
