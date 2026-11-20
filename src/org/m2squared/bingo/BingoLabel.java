@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.Timer;
+import javax.swing.JPopupMenu;
 
 public class BingoLabel extends JLabel {
 	private static final long serialVersionUID = 5932065928529292206L;
@@ -25,14 +27,27 @@ public class BingoLabel extends JLabel {
 	protected Timer flasher;
 	protected boolean isFlashing = false;
 	protected boolean showToggle = true;
-	
+	protected boolean isVisible = false;
+	protected JPopupMenu popupMenu = new JPopupMenu();
+	protected JMenuItem deleteMenuItem = new JMenuItem("Delete");
+	protected JMenuItem cancelMenuItem = new JMenuItem("Cancel");
 	private String text;
 
-	public BingoLabel(String text) {
+	public BingoLabel(String text, BingoBoardContainer container) {
 		super(String.format(HTML, BG_BLACK, text));
 		this.text = text;
 		this.setHorizontalAlignment(CENTER);
 		this.setVerticalAlignment(CENTER);
+		this.popupMenu.add(this.deleteMenuItem);
+		this.deleteMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				container.removeBingoLabel(BingoLabel.this);
+			}
+		});
+		this.popupMenu.add(this.cancelMenuItem);
+		
 		
 		this.flasher = new Timer(FLASH_RATE, new ActionListener() {
 			
@@ -55,10 +70,12 @@ public class BingoLabel extends JLabel {
 	
 	public void showValue() {
 		this.setText(String.format(HTML, BG_WHITE, this.text));
+		this.isVisible = true;
 	}
 	
 	public void hideValue() {
 		this.setText(String.format(HTML, BG_BLACK, this.text));
+		this.isVisible = false;
 	}
 	
 	public void flash(boolean flash) {
@@ -69,6 +86,12 @@ public class BingoLabel extends JLabel {
 			this.isFlashing = false;
 			this.showToggle = true;
 			this.showValue();
+			this.setComponentPopupMenu(popupMenu);
 		}
 	}
+
+	public String getTextValue() {
+		return this.text;
+	}
+	
 }

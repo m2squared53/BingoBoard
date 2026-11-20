@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.Popup;
 import javax.swing.border.Border;
 
-public class BingoBoardLayout {
+public class BingoBoardLayout implements BingoBoardContainer {
 	final static boolean shouldFill = true;
     final static boolean shouldWeightX = true;
     static String[][] LABELS = new String[5][16];
@@ -26,6 +26,7 @@ public class BingoBoardLayout {
 	static int lastEntered = 0;
 	static int currentCounter = 0;
 	static JFrame frame = new JFrame("St. Theresa Turkey Bingo");
+	
 
     
     static {
@@ -41,7 +42,7 @@ public class BingoBoardLayout {
     	}
     }
 
-    public static void addComponentsToPane(Container pane) {
+    public void addComponentsToPane(Container pane) {
 
 		final JButton submitButton = new JButton("Submit");
 		final JButton clearLastButton = new JButton("Clear Last");
@@ -61,7 +62,7 @@ public class BingoBoardLayout {
 		int labelCounter = 0;
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 16; j++) {
-				label = new BingoLabel(LABELS[i][j]);
+				label = new BingoLabel(LABELS[i][j], this);
 				Border border = BorderFactory.createLineBorder(Color.WHITE, 1);
 				label.setBorder(border);
 				if (shouldWeightX) {
@@ -241,20 +242,21 @@ public class BingoBoardLayout {
 		pane.add(resetButton, c);
 }
 
-
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
      * event-dispatching thread.
      */
     private static void createAndShowGUI() {
+		BingoBoardLayout bingoBoardLayout = new BingoBoardLayout();
+
     	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     	System.out.println("Screen Size: width: " + screen.width + " height: " + screen.height);
         //Create and set up the window.
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Set up the content pane.
-        addComponentsToPane(frame.getContentPane());
+        bingoBoardLayout.addComponentsToPane(frame.getContentPane());
 
         //Display the window.
         frame.pack();
@@ -270,4 +272,35 @@ public class BingoBoardLayout {
             }
         });
     }
+
+	@Override
+	public void removeBingoLabel(BingoLabel label) {
+		try {
+			int num = new Integer(label.getTextValue());
+					if (num > 0 && num < 76) {
+						int[] tempArray = new int[currentlabels.length];
+						System.arraycopy(currentlabels, 0, tempArray, 0, currentlabels.length);
+						for (int i = 0; i < currentlabels.length; i++) {
+							if (currentlabels[i] == num - 1) {
+								System.arraycopy(currentlabels, i + 1, tempArray, i, currentlabels.length - i - 1);
+								currentlabels = tempArray;
+								label.hideValue();
+								label.setComponentPopupMenu(null);
+								currentCounter--;
+								labels[lastEntered].flash(false);
+								break;
+							}
+						}
+					}
+					else {
+						throw new RuntimeException("Number is not between 1 and 75");
+					}
+			} catch (NumberFormatException nfe) {
+				// log the error and pass thru 
+				System.err.println("Error parsing number: " + label.getTextValue());
+			} catch (RuntimeException re) {
+				// log the error and pass thru 
+				System.err.println("Error occurred: " + re.getMessage());
+			}
+	}
 }

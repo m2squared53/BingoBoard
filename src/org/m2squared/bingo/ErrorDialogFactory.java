@@ -14,7 +14,7 @@ public class ErrorDialogFactory {
 
 	// Static methods only
 	private ErrorDialogFactory() {
-		// TODO Auto-generated constructor stub
+		// Empty constructor to prevent instantiation
 	}
 	
 	public static Popup getDialogWithDismiss(String message, Container pane, int x, int y) {
@@ -22,7 +22,7 @@ public class ErrorDialogFactory {
 		JPanel errPanel = new JPanel();
 		JLabel errMsg = new JLabel(message);
 		errPanel.add(errMsg);
-		JButton dismissButton = new JButton("Dissmiss");
+		JButton dismissButton = new JButton("Dismiss");
 		errPanel.add(dismissButton);
 		Popup pop = pf.getPopup(pane, errPanel, x, y);
 
